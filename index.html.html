@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>莎翁詞彙花園 | Shakespearean Lexicon Garden</title>
+  <!-- 載入古典襯線與繁體中文明體字型 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Noto+Serif+TC:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg-linen: #f5efe6;
+      --bg-parchment: #fcf8f2;
+      --bg-card-inner: #f8f2e8;
+      --ink-espresso: #2e241f;
+      --ink-umber: #5c4b42;
+      --ink-muted: #8a786c;
+      --burgundy: #6e232e;
+      --burgundy-light: #8f3240;
+      --forest-green: #2c4a3e;
+      --forest-light: #3d6354;
+      --gold-antiqued: #c59b48;
+      --gold-bright: #e3c173;
+      --gold-dark: #8c6823;
+      --border-soft: #dfd3c3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Serif TC", "Cormorant Garamond", Georgia, serif;
+      background-color: var(--bg-linen);
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(197, 155, 72, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(110, 35, 46, 0.07) 0%, transparent 45%);
+      color: var(--ink-espresso);
+      min-height: 100vh;
+    }
+
+    .font-cinzel {
+      font-family: "Cinzel", serif;
+    }
+
+    .font-playfair {
+      font-family: "Playfair Display", Georgia, serif;
+    }
+
+    .font-cormorant {
+      font-family: "Cormorant Garamond", Georgia, serif;
+    }
+
+    /* 雕花古典金框樣式 */
+    .ornate-gold-frame {
+      position: relative;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #e5c67b 0%, #b58938 30%, #f3dc9d 52%, #8e6722 78%, #d7b261 100%);
+      box-shadow:
+        0 18px 36px -12px rgba(46, 36, 31, 0.35),
+        inset 0 2px 3px rgba(255, 250, 235, 0.8),
+        inset 0 -2px 4px rgba(74, 51, 13, 0.6);
+      cursor: zoom-in;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    }
+
+    .ornate-gold-frame:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 24px 44px -12px rgba(46, 36, 31, 0.42),
+        inset 0 2px 4px rgba(255, 250, 235, 0.9);
+    }
+
+    .ornate-inner-mat {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 3px solid #5a4116;
+      background-color: #e9dfd1;
+      aspect-ratio: 4 / 3;
+    }
+
+    /* 左上角酒紅古典字母徽章 */
+    .letter-medallion {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      width: 46px;
+      height: 46px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 30%, var(--burgundy-light), var(--burgundy));
+      border: 2px solid var(--gold-bright);
+      color: #fcf6e8;
+      font-family: "Cinzel", serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(28, 14, 16, 0.45);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* A-Z 導覽膠囊按鈕 */
+    .alpha-pill {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-soft);
+      background-color: var(--bg-parchment);
+      color: var(--ink-umber);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .alpha-pill:hover {
+      border-color: var(--gold-antiqued);
+      color: var(--burgundy);
+      transform: translateY(-1px);
+    }
+
+    .alpha-pill.active {
+      background: linear-gradient(135deg, var(--burgundy), #521821);
+      color: #fdf7eb;
+      border-color: var(--gold-antiqued);
+      box-shadow: 0 4px 10px rgba(110, 35, 46, 0.3);
+    }
+
+    .alpha-pill.mastered::after {
+      content: "♥";
+      position: absolute;
+      top: -5px;
+      right: -4px;
+      font-size: 10px;
+      color: #c93b4b;
+      background: #fcf8f2;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 羊皮紙典藏主卡片 */
+    .parchment-panel {
+      background-color: var(--bg-parchment);
+      border: 1px solid var(--border-soft);
+      border-radius: 22px;
+      box-shadow: 0 14px 35px -15px rgba(46, 36, 31, 0.18);
+    }
+
+    /* 劇句目標字螢光標示 */
+    mark.shakespeare-mark {
+      background: linear-gradient(180deg, transparent 55%, rgba(227, 193, 115, 0.55) 55%);
+      color: var(--burgundy);
+      font-weight: 700;
+      padding: 0 3px;
+      border-radius: 4px;
+    }
+
+    .blank-slot {
+      display: inline-block;
+      letter-spacing: 3px;
+      color: var(--burgundy);
+      font-weight: 700;
+      background: rgba(110, 35, 46, 0.08);
+      padding: 0 8px;
+      border-radius: 6px;
+      border-bottom: 2px dashed var(--burgundy);
+    }
+
+    /* 播放脈衝動畫 */
+    @keyframes pulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(110, 35, 46, 0.45); }
+      70% { box-shadow: 0 0 0 8px rgba(110, 35, 46, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(110, 35, 46, 0); }
+    }
+
+    .playing {
+      animation: pulseRing 1.2s infinite;
+      background-color: var(--burgundy) !important;
+      color: #fff !important;
+      border-color: var(--burgundy) !important;
+    }
+
+    /* 狀態指示燈 */
+    .status-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 9999px;
+    }
+    .status-dot.ok { background-color: #2e7d32; }
+    .status-dot.warn { background-color: #d97706; }
+    .status-dot.checking { background-color: #9ca3af; }
+
+    /* 自訂捲軸 */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #efe7db;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c7b7a3;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-amber-200/70">
+
+  <!-- 頂部古典標題與功能導覽列 -->
+  <header class="border-b border-[#dfd3c3] bg-[#faf4eb]/90 backdrop-blur-md sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <!-- 品牌標題 -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#6e232e] to-[#421219] border-2 border-[#d7b261] flex items-center justify-center text-[#fcf6e8] font-cinzel font-bold text-lg shadow-sm shrink-0">
+          S
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-wide text-[#2e241f] flex items-center gap-2">
+            莎翁詞彙花園
+            <span class="hidden sm:inline-block text-xs font-cinzel tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-[#efe5d5] text-[#6e232e] border border-[#dccab2]">
+              A–Z Impressionist Gallery
+            </span>
+          </h1>
+          <p class="text-xs sm:text-sm font-cormorant italic text-[#6e5c52]">
+            Shakespearean Lexicon Garden · 印象派油畫與古典戲劇詞彙典藏
+          </p>
+        </div>
+      </div>
+
+      <!-- 模式切換與工具按鈕 -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- 雙模式切換器 -->
+        <div class="inline-flex rounded-xl p-1 bg-[#ede3d4] border border-[#d8c8b4]">
+          <button id="modeAppreciateBtn" type="button" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-[#6e232e] text-[#fcf8f2] shadow-sm">
+            🏛️ 典藏鑑賞
+          </button>
+          <button id="modePracticeBtn" type="button" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-[#5c4b42] hover:text-[#2e241f]">
+            ✒️ 拼字試煉
+          </button>
+        </div>
+
+        <!-- 26幅全覽畫廊 -->
+        <button id="btnGalleryOverview" type="button" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#fcf8f2] hover:bg-[#f3eadc] text-[#2c4a3e] border border-[#cbbba7] transition flex items-center gap-1.5 shadow-xs">
+          <span>🖼️</span>
+          <span>全覽畫廊</span>
+        </button>
+
+        <!-- 素材檢測與除錯 -->
+        <button id="btnDebugModal" type="button" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-[#fcf8f2] hover:bg-[#f3eadc] text-[#5c4b42] border border-[#cbbba7] transition flex items-center gap-1.5 shadow-xs" title="檢查外部 MP3 音檔與內建印象派畫布狀態">
+          <span id="debugStatusBadge" class="status-dot ok"></span>
+          <span>素材檢測</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- A–Z 字母快速導覽列 -->
+    <div class="bg-[#f3eadc]/80 border-t border-[#e5d9c8] py-2.5 px-4">
+      <div id="alphabetBar" class="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-1.5">
+        <!-- 由 JS 動態生成 A–Z 膠囊 -->
+      </div>
+    </div>
+  </header>
+
+  <!-- 提示訊息浮動條 -->
+  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full bg-[#2e241f] text-[#fcf8f2] text-sm shadow-xl border border-[#c59b48] transition-all">
+  </div>
+
+  <!-- 主要展示畫廊區 -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="parchment-panel p-5 sm:p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-9 items-center">
+
+        <!-- 左側：雕花金框與印象派油畫畫布 (5欄) -->
+        <div class="lg:col-span-5 flex flex-col items-center">
+          <div id="artworkFrame" class="ornate-gold-frame w-full max-w-md" title="點擊放大欣賞完整畫作">
+            <div class="ornate-inner-mat">
+              <div id="medallionLetter" class="letter-medallion">A</div>
+              <img id="wordImage" src="" alt="印象派油畫配圖" class="w-full h-full object-cover block transition-opacity duration-300" />
+            </div>
+          </div>
+          <div class="mt-3 flex items-center justify-between w-full max-w-md text-xs text-[#7a685c] px-1">
+            <span class="font-cormorant italic text-sm">Impressionist Canvas · 內建莫內式筆觸光影</span>
+            <button type="button" id="btnZoomHint" class="underline hover:text-[#6e232e] cursor-pointer">🔍 點擊畫框放大</button>
+          </div>
+        </div>
+
+        <!-- 右側：單字典藏詳情 或 拼字試煉面板 (7欄) -->
+        <div class="lg:col-span-7">
+
+          <!-- 模式一：典藏鑑賞面板 -->
+          <section id="appreciatePanel" class="space-y-5">
+            <!-- 單字標題、音標與發音 -->
+            <div class="border-b border-[#e4d7c5] pb-4">
+              <div class="flex flex-wrap items-baseline justify-between gap-3">
+                <div class="flex flex-wrap items-baseline gap-3">
+                  <h2 id="displayWord" class="text-3xl sm:text-4xl font-playfair font-bold text-[#2e241f] tracking-tight">
+                    abhor
+                  </h2>
+                  <span id="displayPhonetic" class="text-base sm:text-lg font-cormorant text-[#6e232e] font-semibold">
+                    /əbˈhɔː(r)/
+                  </span>
+                  <span id="displayPos" class="text-xs uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-[#ede2d2] text-[#5c4b42] font-semibold">
+                    v. 動詞
+                  </span>
+                </div>
+
+                <!-- 單字朗讀按鈕 -->
+                <button id="btnPlayWord" type="button" class="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-[#f4eadc] hover:bg-[#e8dac5] text-[#6e232e] border border-[#cfb99d] transition flex items-center gap-1.5 cursor-pointer">
+                  <span>🔊</span>
+                  <span>朗讀單字</span>
+                </button>
+              </div>
+
+              <p id="displayMeaning" class="mt-2 text-lg sm:text-xl font-bold text-[#2c4a3e]">
+                痛恨、厭惡、深惡痛絕
+              </p>
+            </div>
+
+            <!-- 莎士比亞戲劇例句卡片 -->
+            <div class="rounded-2xl bg-[#f7efe2] border border-[#e2d3be] p-4 sm:p-5 relative">
+              <div class="flex items-start justify-between gap-3">
+                <p id="displaySentence" class="text-lg sm:text-xl font-cormorant font-semibold leading-relaxed text-[#2e241f]">
+                  “I truly abhor the whispered deceit that poisons a noble heart.”
+                </p>
+                <button id="btnPlayQuote" type="button" class="shrink-0 w-9 h-9 rounded-full bg-[#fcf8f2] hover:bg-[#6e232e] hover:text-white text-[#6e232e] border border-[#cfb99d] flex items-center justify-center transition cursor-pointer" title="朗讀戲劇例句">
+                  🔊
+                </button>
+              </div>
+              <p id="displaySentenceZh" class="mt-2 text-sm sm:text-base text-[#5c4b42] leading-relaxed">
+                我由衷痛恨那毒害高貴心靈的耳語欺瞞。
+              </p>
+              <p id="displayPlay" class="mt-2 text-xs font-semibold text-[#8c6823] tracking-wide">
+                — 靈感源自《奧賽羅》(Othello)
+              </p>
+            </div>
+
+            <!-- 文學賞析註解 -->
+            <div class="rounded-2xl bg-[#fcfaf6] border border-[#ebe0d0] p-4">
+              <h3 class="text-xs font-bold uppercase tracking-widest text-[#8a786c] mb-1.5 flex items-center gap-1.5">
+                <span>📜</span> 莎劇語境與詞彙賞析
+              </h3>
+              <p id="displayAppreciation" class="text-sm text-[#4a3c35] leading-relaxed">
+                在莎士比亞悲劇中，abhor 常帶有強烈的道德潔癖與靈魂戰慄感，表達對背叛與虛偽的徹底決裂。
+              </p>
+            </div>
+
+            <!-- 底部操作列：收藏與下一幅 -->
+            <div class="pt-1 flex flex-wrap items-center justify-between gap-3">
+              <button id="btnToggleMastered" type="button" class="px-4 py-2.5 rounded-xl text-sm font-semibold border border-[#cfb99d] bg-[#fcf8f2] hover:bg-[#f3e8d8] text-[#6e232e] transition flex items-center gap-2 cursor-pointer">
+                <span id="masteredIcon" class="text-base">♡</span>
+                <span id="masteredText">加入收藏</span>
+              </button>
+
+              <button id="btnNextWord" type="button" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#2c4a3e] hover:bg-[#21382f] text-[#fcf8f2] shadow-sm transition flex items-center gap-2 cursor-pointer">
+                <span>下一幅典藏</span>
+                <span>→</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 模式二：拼字試煉面板 -->
+          <section id="practicePanel" class="hidden space-y-5">
+            <div class="border-b border-[#e4d7c5] pb-3 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-[#6e232e]">Spelling Trial · 詞彙記憶試煉</span>
+                <h2 class="text-xl sm:text-2xl font-bold text-[#2e241f] mt-0.5">
+                  根據中文釋義與語境拼出莎劇單字
+                </h2>
+              </div>
+              <span id="trialPos" class="text-xs px-2.5 py-1 rounded-md bg-[#ede2d2] text-[#5c4b42] font-semibold">
+                v. 動詞
+              </span>
+            </div>
+
+            <!-- 題目提示區 -->
+            <div class="rounded-2xl bg-[#f7efe2] border border-[#e2d3be] p-4 sm:p-5 space-y-2.5">
+              <div class="text-base sm:text-lg font-bold text-[#2c4a3e]">
+                中文釋義：<span id="trialMeaning">痛恨、厭惡</span>
+              </div>
+              <p id="trialMaskedSentence" class="text-lg sm:text-xl font-cormorant font-semibold leading-relaxed text-[#2e241f]">
+                “I truly <span class="blank-slot">_____</span> the whispered deceit...”
+              </p>
+              <p id="trialSentenceZh" class="text-sm text-[#5c4b42]">
+                我由衷痛恨那毒害高貴心靈的耳語欺瞞。
+              </p>
+            </div>
+
+            <!-- 漸進式提示按鈕群 -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="btnHintLetter" type="button" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#fcf8f2] hover:bg-[#f2e7d5] text-[#8c6823] border border-[#d9c4a3] transition cursor-pointer">
+                💡 首字母提示
+              </button>
+              <button id="btnHintAudio" type="button" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#fcf8f2] hover:bg-[#f2e7d5] text-[#6e232e] border border-[#d9c4a3] transition cursor-pointer">
+                🔊 單字發音提示
+              </button>
+              <button id="btnHintQuoteAudio" type="button" class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-[#fcf8f2] hover:bg-[#f2e7d5] text-[#2c4a3e] border border-[#d9c4a3] transition cursor-pointer">
+                🎭 劇句朗讀提示
+              </button>
+            </div>
+
+            <!-- 提示顯示橫幅 -->
+            <div id="hintDisplayBanner" class="hidden rounded-xl bg-[#fffbeb] border border-[#f59e0b]/40 px-4 py-2.5 text-sm text-[#78350f] font-medium">
+            </div>
+
+            <!-- 拼字輸入表單 -->
+            <form id="spellingForm" class="space-y-3">
+              <div class="flex flex-col sm:flex-row gap-2.5">
+                <input
+                  id="spellingInput"
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="在此輸入英文單字拼寫..."
+                  class="flex-1 px-4 py-3 rounded-xl bg-white border-2 border-[#d4c3ad] focus:border-[#6e232e] focus:outline-none text-lg font-playfair tracking-wider text-[#2e241f]"
+                />
+                <button type="submit" class="px-6 py-3 rounded-xl bg-[#6e232e] hover:bg-[#571922] text-[#fcf8f2] font-semibold text-sm sm:text-base shadow-sm transition cursor-pointer">
+                  提交驗證
+                </button>
+              </div>
+            </form>
+
+            <!-- 驗證回饋訊息 -->
+            <div id="trialFeedback" class="hidden rounded-xl px-4 py-3 text-sm font-medium"></div>
+
+            <!-- 試煉底部按鈕 -->
+            <div class="pt-1 flex flex-wrap items-center justify-between gap-3">
+              <button id="btnRevealAnswer" type="button" class="text-xs sm:text-sm text-[#7a685c] hover:text-[#6e232e] underline cursor-pointer">
+                📖 顯示正確解答
+              </button>
+              <button id="btnTrialNext" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-[#2c4a3e] hover:bg-[#21382f] text-[#fcf8f2] transition cursor-pointer">
+                下一題 →
+              </button>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- 卡片底部換頁與進度統計 -->
+      <div class="mt-7 pt-4 border-t border-[#e4d7c5] flex flex-wrap items-center justify-between gap-4 text-sm text-[#5c4b42]">
+        <button id="btnPrevBottom" type="button" class="px-4 py-2 rounded-xl bg-[#f3eadc] hover:bg-[#e6d8c3] font-semibold transition cursor-pointer">
+          ← 上一幅 (Prev)
+        </button>
+
+        <div class="flex items-center gap-4 font-semibold">
+          <span>典藏進度：<strong id="progressCounter" class="text-[#6e232e] font-cinzel">1 / 26</strong></span>
+          <span class="text-[#cbbba7]">|</span>
+          <span>已收藏：<strong id="masteredCount" class="text-[#2c4a3e] font-cinzel">0</strong> / 26</span>
+        </div>
+
+        <button id="btnNextBottom" type="button" class="px-4 py-2 rounded-xl bg-[#f3eadc] hover:bg-[#e6d8c3] font-semibold transition cursor-pointer">
+          下一幅 (Next) →
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 隱藏共用音訊播放器 -->
+  <audio id="sharedAudioPlayer" preload="none"></audio>
+
+  <!-- 燈箱放大檢視 Modal -->
+  <div id="lightboxModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="relative max-w-3xl w-full bg-[#fcf8f2] rounded-2xl p-4 sm:p-6 border-2 border-[#c59b48] shadow-2xl">
+      <button type="button" data-close="lightboxModal" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-[#2e241f] text-white flex items-center justify-center hover:bg-[#6e232e] transition cursor-pointer">
+        ✕
+      </button>
+      <div class="rounded-xl overflow-hidden border border-[#d6c5ae] aspect-4/3 bg-[#e9dfd1]">
+        <img id="lightboxImg" src="" alt="放大畫作" class="w-full h-full object-cover" />
+      </div>
+      <div class="mt-4 text-center">
+        <h3 id="lightboxTitle" class="text-xl sm:text-2xl font-cinzel font-bold text-[#6e232e]">A — abhor</h3>
+        <p id="lightboxQuote" class="mt-1 text-base sm:text-lg font-cormorant italic text-[#2e241f]"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 26幅全覽畫廊 Modal -->
+  <div id="galleryModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#fcf8f2] border-2 border-[#c59b48] rounded-2xl max-w-5xl w-full max-h-[88vh] flex flex-col shadow-2xl">
+      <div class="px-6 py-4 border-b border-[#e2d4c0] flex items-center justify-between">
+        <div>
+          <h3 class="text-xl font-bold text-[#2e241f]">🖼️ 莎翁詞彙印象派全覽畫廊 (A–Z)</h3>
+          <p class="text-xs text-[#6e5c52]">點擊任一畫作即可跳轉至該單字典藏卡片</p>
+        </div>
+        <button type="button" data-close="galleryModal" class="w-9 h-9 rounded-full bg-[#efe5d5] hover:bg-[#6e232e] hover:text-white flex items-center justify-center transition cursor-pointer">
+          ✕
+        </button>
+      </div>
+      <div id="galleryGrid" class="p-6 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <!-- 由 JS 動態填入 26 張畫作縮圖 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 素材檢測 / 除錯模式 Modal -->
+  <div id="debugModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-[#fcf8f2] border-2 border-[#c59b48] rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl">
+      <div class="px-6 py-4 border-b border-[#e2d4c0] flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h3 class="text-xl font-bold text-[#2e241f]">🛠️ 素材檢測與外部音檔狀態表</h3>
+          <p class="text-xs text-[#6e5c52]">畫作已內建印象派渲染引擎（26/26 就緒）；音檔支援外部 MP3 抽換或內建英式語音備援</p>
+        </div>
+        <button type="button" data-close="debugModal" class="w-9 h-9 rounded-full bg-[#efe5d5] hover:bg-[#6e232e] hover:text-white flex items-center justify-center transition cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <div class="px-6 py-3 bg-[#f4eadc] border-b border-[#e2d4c0] flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
+        <div class="flex flex-wrap items-center gap-4">
+          <span>🎨 印象派畫布：<strong id="dbgImgOk" class="text-[#2c4a3e]">26</strong> / 26</span>
+          <span>🔊 單字外部MP3：<strong id="dbgWordAudioOk" class="text-[#6e232e]">0</strong> / 26</span>
+          <span>🎭 例句外部MP3：<strong id="dbgQuoteAudioOk" class="text-[#6e232e]">0</strong> / 26</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="inline-flex items-center gap-1.5 cursor-pointer">
+            <input id="chkMissingOnly" type="checkbox" class="rounded accent-[#6e232e]" />
+            <span>僅顯示尚未放入外部 MP3</span>
+          </label>
+          <button id="btnRescanAssets" type="button" class="px-3 py-1 rounded-lg bg-[#2c4a3e] text-white text-xs font-semibold hover:bg-[#1f362d] cursor-pointer">
+            重新掃描
+          </button>
+        </div>
+      </div>
+
+      <div class="p-4 overflow-y-auto">
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr class="border-b-2 border-[#d8c8b4] text-[#5c4b42]">
+              <th class="py-2 px-2">字母</th>
+              <th class="py-2 px-2">單字</th>
+              <th class="py-2 px-2">畫作狀態</th>
+              <th class="py-2 px-2">單字音檔</th>
+              <th class="py-2 px-2">例句音檔</th>
+              <th class="py-2 px-2">操作</th>
+            </tr>
+          </thead>
+          <tbody id="debugTableBody" class="divide-y divide-[#e8dccb]">
+            <!-- 由 JS 動態生成 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * 完整 A–Z 莎士比亞詞彙與戲劇語境資料庫 (26筆)
+     */
+    const VOCABULARY_DATA = [
+      {
+        id: "a-abhor",
+        letter: "A",
+        word: "abhor",
+        phonetic: "/əbˈhɔː(r)/",
+        pos: "v. 動詞",
+        meaningZh: "痛恨、厭惡、深惡痛絕",
+        sentence: "I truly abhor the whispered deceit that poisons a noble heart.",
+        sentenceZh: "我由衷痛恨那毒害高貴心靈的耳語欺瞞。",
+        play: "靈感源自《奧賽羅》(Othello)",
+        appreciation: "在莎士比亞悲劇中，abhor 常帶有強烈的道德潔癖與靈魂戰慄感，表達對背叛與虛偽的徹底決裂。",
+        image: "assets/images/a-abhor.jpg",
+        wordAudio: "assets/audio/words/a-abhor-word.mp3",
+        quoteAudio: "assets/audio/quotes/a-abhor-quote.mp3"
+      },
+      {
+        id: "b-beguile",
+        letter: "B",
+        word: "beguile",
+        phonetic: "/bɪˈɡaɪl/",
+        pos: "v. 動詞",
+        meaningZh: "迷住、欺騙、消磨（時光）",
+        sentence: "Moonlit fairies often beguile wandering lovers beneath the silver oaks.",
+        sentenceZh: "月光下的精靈常在銀色橡樹下迷住徘徊的戀人。",
+        play: "靈感源自《仲夏夜之夢》(A Midsummer Night's Dream)",
+        appreciation: "beguile 兼具「魅惑」與「使人不知不覺沉醉」的雙重詩意，在莎翁喜劇裡常與森林幻術相伴。",
+        image: "assets/images/b-beguile.jpg",
+        wordAudio: "assets/audio/words/b-beguile-word.mp3",
+        quoteAudio: "assets/audio/quotes/b-beguile-quote.mp3"
+      },
+      {
+        id: "c-calamity",
+        letter: "C",
+        word: "calamity",
+        phonetic: "/kəˈlæməti/",
+        pos: "n. 名詞",
+        meaningZh: "災禍、苦難、不幸",
+        sentence: "Only deep reflection makes a long life of quiet calamity so hard to abandon.",
+        sentenceZh: "唯有深沉的思慮，才使人如此難以捨棄這漫長而無聲的苦難人生。",
+        play: "化用自《哈姆雷特》(Hamlet) 第三幕獨白",
+        appreciation: "哈姆雷特著名的「生存還是毀滅」獨白中，便以 calamity 形容人世間漫長而無法逃避的命運重擔。",
+        image: "assets/images/c-calamity.jpg",
+        wordAudio: "assets/audio/words/c-calamity-word.mp3",
+        quoteAudio: "assets/audio/quotes/c-calamity-quote.mp3"
+      },
+      {
+        id: "d-dalliance",
+        letter: "D",
+        word: "dalliance",
+        phonetic: "/ˈdæliəns/",
+        pos: "n. 名詞",
+        meaningZh: "調情、嬉戲、虛度光陰",
+        sentence: "Do not tread the primrose path of dalliance while forgetting your own solemn counsel.",
+        sentenceZh: "切莫踏上嬉戲享樂的報春花小徑，卻遺忘了自己莊嚴的教誨。",
+        play: "化用自《哈姆雷特》(Hamlet) 第一幕",
+        appreciation: "奧菲莉亞勸誡兄長雷歐提斯時說出的「primrose path of dalliance」，成為英語文學中最經典的隱喻之一。",
+        image: "assets/images/d-dalliance.jpg",
+        wordAudio: "assets/audio/words/d-dalliance-word.mp3",
+        quoteAudio: "assets/audio/quotes/d-dalliance-quote.mp3"
+      },
+      {
+        id: "e-ephemeral",
+        letter: "E",
+        word: "ephemeral",
+        phonetic: "/ɪˈfemərəl/",
+        pos: "adj. 形容詞",
+        meaningZh: "朝生暮死的、短暫的、轉瞬即逝的",
+        sentence: "Our grandest pageants are ephemeral visions that melt into thin morning air.",
+        sentenceZh: "我們最盛大的慶典也不過是轉瞬即逝的幻影，終將消融於稀薄的晨曦空氣之中。",
+        play: "呼應《暴風雨》(The Tempest) 普羅斯佩羅獨白",
+        appreciation: "源自希臘文「僅存一日」，精準捕捉莎翁晚期劇作中「人生如夢、繁華終散」的哲學嘆息。",
+        image: "assets/images/e-ephemeral.jpg",
+        wordAudio: "assets/audio/words/e-ephemeral-word.mp3",
+        quoteAudio: "assets/audio/quotes/e-ephemeral-quote.mp3"
+      },
+      {
+        id: "f-forbear",
+        letter: "F",
+        word: "forbear",
+        phonetic: "/fɔːˈbeə(r)/",
+        pos: "v. 動詞",
+        meaningZh: "克制、忍耐、寬容、避免",
+        sentence: "Forbear to judge the frailty of others when storms test every mortal crown.",
+        sentenceZh: "當風暴考驗每一頂凡人王冠時，請克制自己，莫輕易論斷他人的脆弱。",
+        play: "靈感源自《亨利六世》(Henry VI)",
+        appreciation: "在伊麗莎白時代英語中，forbear 帶有高貴的節制與慈悲意味，常見於君王與賢者的勸諫。",
+        image: "assets/images/f-forbear.jpg",
+        wordAudio: "assets/audio/words/f-forbear-word.mp3",
+        quoteAudio: "assets/audio/quotes/f-forbear-quote.mp3"
+      },
+      {
+        id: "g-gallant",
+        letter: "G",
+        word: "gallant",
+        phonetic: "/ˈɡælənt/",
+        pos: "adj. 形容詞",
+        meaningZh: "英勇的、豪俠的、對女性殷勤有禮的",
+        sentence: "A gallant gentleman greets the dawn with an unyielding spirit and courteous grace.",
+        sentenceZh: "一位英勇而彬彬有禮的紳士，總以不屈的靈魂與優雅風度迎接黎明。",
+        play: "靈感源自《羅密歐與茱麗葉》(Romeo and Juliet)",
+        appreciation: "gallant 完美融合了文藝復興時期騎士的兩種美德：戰場上的無畏勇氣，以及宮廷中的溫文爾雅。",
+        image: "assets/images/g-gallant.jpg",
+        wordAudio: "assets/audio/words/g-gallant-word.mp3",
+        quoteAudio: "assets/audio/quotes/g-gallant-quote.mp3"
+      },
+      {
+        id: "h-harbinger",
+        letter: "H",
+        word: "harbinger",
+        phonetic: "/ˈhɑːbɪndʒə(r)/",
+        pos: "n. 名詞",
+        meaningZh: "先驅、預兆、報信者",
+        sentence: "The pale mist over the heath became a silent harbinger of approaching fate.",
+        sentenceZh: "荒原上蒼白的薄霧，化作了命運逼近的無聲預兆。",
+        play: "靈感源自《馬克白》(Macbeth)",
+        appreciation: "原意為「先行安排宿營的使者」，在《馬克白》中常轉化為不祥與命運轉折的詩意象徵。",
+        image: "assets/images/h-harbinger.jpg",
+        wordAudio: "assets/audio/words/h-harbinger-word.mp3",
+        quoteAudio: "assets/audio/quotes/h-harbinger-quote.mp3"
+      },
+      {
+        id: "i-insolence",
+        letter: "I",
+        word: "insolence",
+        phonetic: "/ˈɪnsələns/",
+        pos: "n. 名詞",
+        meaningZh: "傲慢、無禮、跋扈",
+        sentence: "Patient merit often endures the loud insolence of those who hold fleeting office.",
+        sentenceZh: "隱忍的美德，往往得承受那些身居短暫高位者的喧囂傲慢。",
+        play: "化用自《哈姆雷特》(Hamlet)「the insolence of office」",
+        appreciation: "「當權者的傲慢 (the insolence of office)」是莎士比亞對官僚體制最銳利也最歷久彌新的批判。",
+        image: "assets/images/i-insolence.jpg",
+        wordAudio: "assets/audio/words/i-insolence-word.mp3",
+        quoteAudio: "assets/audio/quotes/i-insolence-quote.mp3"
+      },
+      {
+        id: "j-jocund",
+        letter: "J",
+        word: "jocund",
+        phonetic: "/ˈdʒɒkənd/",
+        pos: "adj. 形容詞",
+        meaningZh: "歡樂的、快活的、明朗的",
+        sentence: "Jocund day stands tiptoe upon the misty mountain tops as night withdraws.",
+        sentenceZh: "當黑夜退去，歡快的白晝正踮起腳尖，佇立在霧氣繚繞的山巔之上。",
+        play: "化用自《羅密歐與茱麗葉》(Romeo and Juliet) 第三幕",
+        appreciation: "羅密歐在黎明道別時說出「Jocund day stands tiptoe...」，將晨光擬人化為輕盈起舞的少年。",
+        image: "assets/images/j-jocund.jpg",
+        wordAudio: "assets/audio/words/j-jocund-word.mp3",
+        quoteAudio: "assets/audio/quotes/j-jocund-quote.mp3"
+      },
+      {
+        id: "k-kindred",
+        letter: "K",
+        word: "kindred",
+        phonetic: "/ˈkɪndrəd/",
+        pos: "adj. / n.",
+        meaningZh: "志趣相投的、同源的；親屬",
+        sentence: "Two kindred souls recognize each other across roaring seas and shifting disguises.",
+        sentenceZh: "兩顆志趣相投的靈魂，即便隔著咆哮大海與變幻偽裝，仍能認出彼此。",
+        play: "靈感源自《第十二夜》(Twelfth Night)",
+        appreciation: "kindred 源自古英語「血脈家族」，在浪漫文學中昇華為超越血緣的「靈魂伴侶 (kindred spirits)」。",
+        image: "assets/images/k-kindred.jpg",
+        wordAudio: "assets/audio/words/k-kindred-word.mp3",
+        quoteAudio: "assets/audio/quotes/k-kindred-quote.mp3"
+      },
+      {
+        id: "l-lament",
+        letter: "L",
+        word: "lament",
+        phonetic: "/ləˈment/",
+        pos: "v. / n.",
+        meaningZh: "哀悼、痛哭、悲歌",
+        sentence: "Let us sit upon the ground and lament the fragile glory of earthly kings.",
+        sentenceZh: "讓我們席地而坐，一同哀悼世俗君王那脆弱如夢的榮光。",
+        play: "化用自《理查二世》(Richard II) 第三幕",
+        appreciation: "理查二世在失勢時坐地哀嘆王權虛幻，lament 賦予台詞如古典輓歌般的莊嚴韻律。",
+        image: "assets/images/l-lament.jpg",
+        wordAudio: "assets/audio/words/l-lament-word.mp3",
+        quoteAudio: "assets/audio/quotes/l-lament-quote.mp3"
+      },
+      {
+        id: "m-melancholy",
+        letter: "M",
+        word: "melancholy",
+        phonetic: "/ˈmelənkəli/",
+        pos: "n. / adj.",
+        meaningZh: "憂鬱、沉思的悲傷、多愁善感",
+        sentence: "A poet's melancholy is compounded of many simples extracted from worldly travel.",
+        sentenceZh: "詩人的憂鬱，是由世間遊歷所提煉出的百種草藥調和而成的。",
+        play: "化用自《皆大歡喜》(As You Like It) 傑奎斯台詞",
+        appreciation: "文藝復興時期認為憂鬱是一種高貴而富含哲思的氣質，《皆大歡喜》中的傑奎斯便是其經典化身。",
+        image: "assets/images/m-melancholy.jpg",
+        wordAudio: "assets/audio/words/m-melancholy-word.mp3",
+        quoteAudio: "assets/audio/quotes/m-melancholy-quote.mp3"
+      },
+      {
+        id: "n-nefarious",
+        letter: "N",
+        word: "nefarious",
+        phonetic: "/nɪˈfeəriəs/",
+        pos: "adj. 形容詞",
+        meaningZh: "邪惡的、惡毒的、窮凶極惡的",
+        sentence: "Behind a courteous smile, a nefarious plot was woven in the candlelit chamber.",
+        sentenceZh: "在彬彬有禮的微笑背後，一場邪惡陰謀正於燭光搖曳的密室中編織。",
+        play: "靈感源自《理查三世》(Richard III)",
+        appreciation: "詞源拉丁文 nefas（違背神律之罪），常用來描寫暗處籌劃篡位或陷害的陰險計謀。",
+        image: "assets/images/n-nefarious.jpg",
+        wordAudio: "assets/audio/words/n-nefarious-word.mp3",
+        quoteAudio: "assets/audio/quotes/n-nefarious-quote.mp3"
+      },
+      {
+        id: "o-oblivion",
+        letter: "O",
+        word: "oblivion",
+        phonetic: "/əˈblɪviən/",
+        pos: "n. 名詞",
+        meaningZh: "遺忘、湮沒、無意識狀態",
+        sentence: "Time's swift current carries every mortal triumph toward silent oblivion.",
+        sentenceZh: "時間湍急的洪流，將每一場凡人的凱旋都帶向寂靜的遺忘。",
+        play: "靈感源自《特洛伊羅斯與克瑞西達》(Troilus and Cressida)",
+        appreciation: "莎翁筆下的「時間 (Time)」常背負著名為 Oblivion 的巨大行囊，吞噬一切往昔功業與誓言。",
+        image: "assets/images/o-oblivion.jpg",
+        wordAudio: "assets/audio/words/o-oblivion-word.mp3",
+        quoteAudio: "assets/audio/quotes/o-oblivion-quote.mp3"
+      },
+      {
+        id: "p-perchance",
+        letter: "P",
+        word: "perchance",
+        phonetic: "/pəˈtʃɑːns/",
+        pos: "adv. 副詞",
+        meaningZh: "或許、也許、偶然",
+        sentence: "To sleep in peaceful stillness, and perchance to dream beyond earthly sorrow.",
+        sentenceZh: "在寧靜中沉睡，或許還能作一場超越塵世哀愁的夢。",
+        play: "化用自《哈姆雷特》(Hamlet)「To sleep, perchance to dream」",
+        appreciation: "perchance 比現代英語的 perhaps 更具古典詩意與命運未知的懸疑感，為《哈姆雷特》點睛之字。",
+        image: "assets/images/p-perchance.jpg",
+        wordAudio: "assets/audio/words/p-perchance-word.mp3",
+        quoteAudio: "assets/audio/quotes/p-perchance-quote.mp3"
+      },
+      {
+        id: "q-quench",
+        letter: "Q",
+        word: "quench",
+        phonetic: "/kwentʃ/",
+        pos: "v. 動詞",
+        meaningZh: "熄滅、解渴、平息（怒火或慾望）",
+        sentence: "Gentle mercy falls like summer rain to quench the fierce flame of vengeance.",
+        sentenceZh: "溫柔的慈悲如夏雨般降落，平息了復仇那熾烈的火焰。",
+        play: "靈感源自《威尼斯商人》(The Merchant of Venice)",
+        appreciation: "既可指以清泉解渴，也常比喻用理智或慈悲澆熄心中燃燒的嫉妒與復仇烈焰。",
+        image: "assets/images/q-quench.jpg",
+        wordAudio: "assets/audio/words/q-quench-word.mp3",
+        quoteAudio: "assets/audio/quotes/q-quench-quote.mp3"
+      },
+      {
+        id: "r-remorse",
+        letter: "R",
+        word: "remorse",
+        phonetic: "/rɪˈmɔːs/",
+        pos: "n. 名詞",
+        meaningZh: "懊悔、良心譴責、憐憫",
+        sentence: "No ocean perfume can cleanse a conscience haunted by sleepless remorse.",
+        sentenceZh: "再多海洋的芬芳，也洗不淨被無眠懊悔所纏繞的良心。",
+        play: "靈感源自《馬克白》(Macbeth)",
+        appreciation: "詞源拉丁文 remordere，字面意思是「一再回頭咬噬」，生動描繪罪惡感對心靈的折磨。",
+        image: "assets/images/r-remorse.jpg",
+        wordAudio: "assets/audio/words/r-remorse-word.mp3",
+        quoteAudio: "assets/audio/quotes/r-remorse-quote.mp3"
+      },
+      {
+        id: "s-solitude",
+        letter: "S",
+        word: "solitude",
+        phonetic: "/ˈsɒlɪtjuːd/",
+        pos: "n. 名詞",
+        meaningZh: "獨處、幽靜、荒僻之地",
+        sentence: "Sweet solitude among ancient trees speaks wiser truths than flattery at court.",
+        sentenceZh: "古木之間的甜美獨處，訴說著比宮廷阿諛更智慧的真理。",
+        play: "靈感源自《皆大歡喜》(As You Like It) 亞登森林",
+        appreciation: "不同於 loneliness 的孤單寂寞，solitude 在莎翁田園喜劇裡象徵心靈回歸自然的自由與澄明。",
+        image: "assets/images/s-solitude.jpg",
+        wordAudio: "assets/audio/words/s-solitude-word.mp3",
+        quoteAudio: "assets/audio/quotes/s-solitude-quote.mp3"
+      },
+      {
+        id: "t-tempest",
+        letter: "T",
+        word: "tempest",
+        phonetic: "/ˈtempɪst/",
+        pos: "n. 名詞",
+        meaningZh: "暴風雨、騷動、劇烈動盪",
+        sentence: "After the roaring tempest subsides, harmony returns to the enchanted shore.",
+        sentenceZh: "當咆哮的暴風雨平息之後，和諧再度降臨這座魔法海岸。",
+        play: "靈感源自《暴風雨》(The Tempest)",
+        appreciation: "既是劇名本身，也象徵人生與政治秩序經歷劇烈洗禮後的淨化與和解。",
+        image: "assets/images/t-tempest.jpg",
+        wordAudio: "assets/audio/words/t-tempest-word.mp3",
+        quoteAudio: "assets/audio/quotes/t-tempest-quote.mp3"
+      },
+      {
+        id: "u-usurp",
+        letter: "U",
+        word: "usurp",
+        phonetic: "/juːˈzɜːp/",
+        pos: "v. 動詞",
+        meaningZh: "篡奪、侵占、非法奪取",
+        sentence: "Ambition must never usurp the sacred trust bestowed by a free republic.",
+        sentenceZh: "野心絕不可篡奪自由共和國所託付的神聖信任。",
+        play: "靈感源自《凱撒大帝》(Julius Caesar)",
+        appreciation: "莎翁歷史劇與羅馬劇的核心母題之一，探討權力合法性與野心越界後的悲劇代價。",
+        image: "assets/images/u-usurp.jpg",
+        wordAudio: "assets/audio/words/u-usurp-word.mp3",
+        quoteAudio: "assets/audio/quotes/u-usurp-quote.mp3"
+      },
+      {
+        id: "v-valiant",
+        letter: "V",
+        word: "valiant",
+        phonetic: "/ˈvæliənt/",
+        pos: "adj. 形容詞",
+        meaningZh: "英勇的、無畏的、堅毅的",
+        sentence: "The valiant spirit faces destiny once with dignity rather than trembling daily.",
+        sentenceZh: "英勇的靈魂只帶著尊嚴直面命運一次，而非日復一日地在恐懼中顫抖。",
+        play: "化用自《凱撒大帝》(Julius Caesar)「The valiant never taste of death but once」",
+        appreciation: "「懦夫在未死之前已死過多次，勇者一生只嘗一次死亡滋味」，是莎翁最膾炙人口的格言。",
+        image: "assets/images/v-valiant.jpg",
+        wordAudio: "assets/audio/words/v-valiant-word.mp3",
+        quoteAudio: "assets/audio/quotes/v-valiant-quote.mp3"
+      },
+      {
+        id: "w-woe",
+        letter: "W",
+        word: "woe",
+        phonetic: "/wəʊ/",
+        pos: "n. 名詞",
+        meaningZh: "悲哀、苦惱、深切的哀愁",
+        sentence: "Parting brings such tender woe that lovers linger until the morning star fades.",
+        sentenceZh: "離別帶來如此溫柔的哀愁，使戀人們流連忘返，直到晨星隱去。",
+        play: "化用自《羅密歐與茱麗葉》(Romeo and Juliet)「parting is such sweet sorrow」",
+        appreciation: "全劇最後一句也以 woe 收尾（For never was a story of more woe...），是極具戲劇張力的古典單音節詞。",
+        image: "assets/images/w-woe.jpg",
+        wordAudio: "assets/audio/words/w-woe-word.mp3",
+        quoteAudio: "assets/audio/quotes/w-woe-quote.mp3"
+      },
+      {
+        id: "x-xenial",
+        letter: "X",
+        word: "xenial",
+        phonetic: "/ˈziːniəl/",
+        pos: "adj. 形容詞",
+        meaningZh: "好客的、友善待客的、賓主盡歡的",
+        sentence: "A xenial harvest feast welcomes weary travelers with music, wine, and wildflowers.",
+        sentenceZh: "一場熱情好客的豐收饗宴，以樂音、美酒與野花歡迎疲憊的旅人。",
+        play: "呼應《冬天的故事》(The Winter's Tale) 牧羊人豐收宴",
+        appreciation: "源自古希臘賓客之道 (Xenia)，代表對遠道而來的陌生人獻上無私款待的古典美德。",
+        image: "assets/images/x-xenial.jpg",
+        wordAudio: "assets/audio/words/x-xenial-word.mp3",
+        quoteAudio: "assets/audio/quotes/x-xenial-quote.mp3"
+      },
+      {
+        id: "y-yearn",
+        letter: "Y",
+        word: "yearn",
+        phonetic: "/jɜːn/",
+        pos: "v. 動詞",
+        meaningZh: "渴望、深切懷念、嚮往",
+        sentence: "Hearts separated by distant leagues still yearn for a single shared horizon.",
+        sentenceZh: "相隔萬里的兩顆心，依然深切渴望著同一片共享的地平線。",
+        play: "靈感源自《十四行詩》(Sonnets)",
+        appreciation: "帶有靈魂深處隱隱作痛般的思念與期盼，常見於遠行者與戀人的書信獨白。",
+        image: "assets/images/y-yearn.jpg",
+        wordAudio: "assets/audio/words/y-yearn-word.mp3",
+        quoteAudio: "assets/audio/quotes/y-yearn-quote.mp3"
+      },
+      {
+        id: "z-zeal",
+        letter: "Z",
+        word: "zeal",
+        phonetic: "/ziːl/",
+        pos: "n. 名詞",
+        meaningZh: "熱忱、激情、忠誠的熱血",
+        sentence: "Noble zeal ignites the courage of comrades standing shoulder to shoulder at dawn.",
+        sentenceZh: "高貴的熱忱，在黎明時分點燃了並肩而立的戰友們心中的勇氣。",
+        play: "靈感源自《亨利五世》(Henry V) 聖克里斯平節演說",
+        appreciation: "為 26 個字母畫下昂揚句點，象徵對理想、信念與榮譽全心全意的燃燒與奉獻。",
+        image: "assets/images/z-zeal.jpg",
+        wordAudio: "assets/audio/words/z-zeal-word.mp3",
+        quoteAudio: "assets/audio/quotes/z-zeal-quote.mp3"
+      }
+    ];
+
+    (function () {
+      const state = {
+        currentIndex: 0,
+        mode: "appreciate",
+        masteredIds: new Set(JSON.parse(localStorage.getItem("shakespeare_mastered") || "[]")),
+        hintStep: 0,
+        assetStatus: {}
+      };
+
+      // 26 個單字專屬印象派調色盤與場景參數（莫內／雷諾瓦式筆觸光影）
+      const PAINTING_THEMES = {
+        "a-abhor":      { sky: ["#f4b982", "#e88d72", "#6e5a7e"], water: ["#d98a6c", "#465875", "#2c394b"], accent: "#9e2a2b" },
+        "b-beguile":    { sky: ["#2b3556", "#4b5d8a", "#8ea4c8"], water: ["#1e2742", "#3a4c7a", "#6d83b5"], accent: "#f7e396" },
+        "c-calamity":   { sky: ["#4a5362", "#788292", "#d8b48a"], water: ["#2b3440", "#455364", "#9c8369"], accent: "#f2c57c" },
+        "d-dalliance":  { sky: ["#cbe4f5", "#f3ebd3", "#e8d29c"], water: ["#96b87d", "#6e9458", "#d6b85a"], accent: "#f5d042" },
+        "e-ephemeral":  { sky: ["#f5d5c8", "#e8dff0", "#fae8c8"], water: ["#c5d5e4", "#e6cfd8", "#f7dfc2"], accent: "#ffffff" },
+        "f-forbear":    { sky: ["#8fa3b8", "#d9c7a8", "#f2dca6"], water: ["#6d7b58", "#8d8259", "#4f5c43"], accent: "#e8b960" },
+        "g-gallant":    { sky: ["#f7c6b9", "#f4dfc8", "#b9c8e0"], water: ["#c99a8e", "#8e7b78", "#d9b6a3"], accent: "#e57a84" },
+        "h-harbinger":  { sky: ["#5c667a", "#8a94a8", "#b8bfd0"], water: ["#3d4656", "#646d82", "#959eb3"], accent: "#d8dff0" },
+        "i-insolence":  { sky: ["#e8d5b5", "#f5e8cc", "#c7b293"], water: ["#b89f7d", "#8c7456", "#e0cca8"], accent: "#d4af37" },
+        "j-jocund":     { sky: ["#f59c6c", "#f7c98b", "#9ab4d6"], water: ["#6d8768", "#8fa67e", "#d49a6a"], accent: "#ffe082" },
+        "k-kindred":    { sky: ["#b8daf0", "#e6f0f7", "#d9e3f0"], water: ["#5ca4a9", "#84c3be", "#a9dcd6"], accent: "#fff8eb" },
+        "l-lament":     { sky: ["#e6ceb0", "#d4b48c", "#b89f82"], water: ["#9c6638", "#c48845", "#6e5a44"], accent: "#d97b38" },
+        "m-melancholy": { sky: ["#e8d3a8", "#c9b384", "#8fa382"], water: ["#4e6b58", "#7a8c5c", "#c98a3e"], accent: "#e09f3e" },
+        "n-nefarious":  { sky: ["#232b3d", "#394867", "#6c7a96"], water: ["#3b281e", "#5c3c28", "#241914"], accent: "#ffb74d" },
+        "o-oblivion":   { sky: ["#f2b880", "#e6a49c", "#b3a8c9"], water: ["#d99b78", "#9ea7c2", "#f5cba0"], accent: "#ffe3b3" },
+        "p-perchance":  { sky: ["#22294a", "#3d4875", "#767fa8"], water: ["#29345c", "#4b5a8a", "#8994bd"], accent: "#e6d7ff" },
+        "q-quench":     { sky: ["#b9d4e8", "#e3eef5", "#f5e9d3"], water: ["#5d8a58", "#84ad76", "#a8c99b"], accent: "#e86f82" },
+        "r-remorse":    { sky: ["#32435f", "#5b708f", "#a6b3c4"], water: ["#1f3247", "#385673", "#8ba3b8"], accent: "#e8eef5" },
+        "s-solitude":   { sky: ["#d8e8c8", "#f2ebd4", "#a8c79c"], water: ["#4a6e48", "#6d9464", "#98ba88"], accent: "#f7e69c" },
+        "t-tempest":    { sky: ["#4a607a", "#89a4bd", "#f2d6a2"], water: ["#2e5266", "#54869c", "#a3c9d4"], accent: "#f7c59f" },
+        "u-usurp":      { sky: ["#e8a87c", "#f2cfa5", "#8a99b8"], water: ["#a6896d", "#c7ad91", "#6e5a49"], accent: "#f5d799" },
+        "v-valiant":    { sky: ["#5b8ec9", "#9ec4e8", "#e8f1f8"], water: ["#d99b26", "#f0be49", "#b57a19"], accent: "#ffe07d" },
+        "w-woe":        { sky: ["#3d5278", "#7d92b8", "#e8c5b0"], water: ["#4e678c", "#7b93b5", "#b8c7db"], accent: "#fff3c4" },
+        "x-xenial":     { sky: ["#cbe3f5", "#f7e7c4", "#f2cfa0"], water: ["#7ca35c", "#a3c278", "#d9b45b"], accent: "#e86a58" },
+        "y-yearn":      { sky: ["#e6a4b4", "#f3d0c8", "#9ea7cc"], water: ["#7e6d9e", "#a88cb8", "#d49eb8"], accent: "#ffd6ba" },
+        "z-zeal":       { sky: ["#f5b056", "#fae09e", "#8fb8de"], water: ["#8aa668", "#c2b05c", "#68824c"], accent: "#fff099" }
+      };
+
+      const el = {
+        alphabetBar: document.getElementById("alphabetBar"),
+        modeAppreciateBtn: document.getElementById("modeAppreciateBtn"),
+        modePracticeBtn: document.getElementById("modePracticeBtn"),
+        appreciatePanel: document.getElementById("appreciatePanel"),
+        practicePanel: document.getElementById("practicePanel"),
+
+        artworkFrame: document.getElementById("artworkFrame"),
+        medallionLetter: document.getElementById("medallionLetter"),
+        wordImage: document.getElementById("wordImage"),
+
+        displayWord: document.getElementById("displayWord"),
+        btnPlayWord: document.getElementById("btnPlayWord"),
+        displayPhonetic: document.getElementById("displayPhonetic"),
+        displayPos: document.getElementById("displayPos"),
+        displayMeaning: document.getElementById("displayMeaning"),
+        displaySentence: document.getElementById("displaySentence"),
+        displaySentenceZh: document.getElementById("displaySentenceZh"),
+        displayPlay: document.getElementById("displayPlay"),
+        btnPlayQuote: document.getElementById("btnPlayQuote"),
+        displayAppreciation: document.getElementById("displayAppreciation"),
+        btnToggleMastered: document.getElementById("btnToggleMastered"),
+        masteredIcon: document.getElementById("masteredIcon"),
+        masteredText: document.getElementById("masteredText"),
+        btnNextWord: document.getElementById("btnNextWord"),
+
+        trialPos: document.getElementById("trialPos"),
+        trialMeaning: document.getElementById("trialMeaning"),
+        trialMaskedSentence: document.getElementById("trialMaskedSentence"),
+        trialSentenceZh: document.getElementById("trialSentenceZh"),
+        btnHintLetter: document.getElementById("btnHintLetter"),
+        btnHintAudio: document.getElementById("btnHintAudio"),
+        btnHintQuoteAudio: document.getElementById("btnHintQuoteAudio"),
+        hintDisplayBanner: document.getElementById("hintDisplayBanner"),
+        spellingForm: document.getElementById("spellingForm"),
+        spellingInput: document.getElementById("spellingInput"),
+        trialFeedback: document.getElementById("trialFeedback"),
+        btnRevealAnswer: document.getElementById("btnRevealAnswer"),
+        btnTrialNext: document.getElementById("btnTrialNext"),
+
+        btnPrevBottom: document.getElementById("btnPrevBottom"),
+        btnNextBottom: document.getElementById("btnNextBottom"),
+        progressCounter: document.getElementById("progressCounter"),
+        masteredCount: document.getElementById("masteredCount"),
+        sharedAudioPlayer: document.getElementById("sharedAudioPlayer"),
+        toastBanner: document.getElementById("toastBanner"),
+
+        btnGalleryOverview: document.getElementById("btnGalleryOverview"),
+        galleryModal: document.getElementById("galleryModal"),
+        galleryGrid: document.getElementById("galleryGrid"),
+        btnDebugModal: document.getElementById("btnDebugModal"),
+        debugModal: document.getElementById("debugModal"),
+        debugStatusBadge: document.getElementById("debugStatusBadge"),
+        dbgImgOk: document.getElementById("dbgImgOk"),
+        dbgWordAudioOk: document.getElementById("dbgWordAudioOk"),
+        dbgQuoteAudioOk: document.getElementById("dbgQuoteAudioOk"),
+        chkMissingOnly: document.getElementById("chkMissingOnly"),
+        btnRescanAssets: document.getElementById("btnRescanAssets"),
+        debugTableBody: document.getElementById("debugTableBody"),
+
+        lightboxModal: document.getElementById("lightboxModal"),
+        lightboxImg: document.getElementById("lightboxImg"),
+        lightboxTitle: document.getElementById("lightboxTitle"),
+        lightboxQuote: document.getElementById("lightboxQuote")
+      };
+
+      /* =========================================================
+         內建印象派油畫筆觸生成器（免外部圖檔，即時生成 DataURL）
+         ========================================================= */
+      const paintingCache = {};
+
+      function getImpressionistPaintingUrl(item) {
+        if (paintingCache[item.id]) return paintingCache[item.id];
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 800;
+        canvas.height = 600;
+        const ctx = canvas.getContext("2d");
+
+        const theme = PAINTING_THEMES[item.id] || {
+          sky: ["#cbe4f5", "#f3ebd3", "#e8d29c"],
+          water: ["#5ca4a9", "#84c3be", "#a9dcd6"],
+          accent: "#f5d042"
+        };
+
+        let seed = item.id.split("").reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 7);
+        const rand = () => {
+          seed = (seed * 1664525 + 1013904223) % 4294967296;
+          return seed / 4294967296;
+        };
+
+        // 1. 底層漸層畫布
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, 340);
+        skyGrad.addColorStop(0, theme.sky[0]);
+        skyGrad.addColorStop(0.55, theme.sky[1]);
+        skyGrad.addColorStop(1, theme.sky[2]);
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, 800, 340);
+
+        const groundGrad = ctx.createLinearGradient(0, 320, 0, 600);
+        groundGrad.addColorStop(0, theme.water[0]);
+        groundGrad.addColorStop(0.5, theme.water[1]);
+        groundGrad.addColorStop(1, theme.water[2]);
+        ctx.fillStyle = groundGrad;
+        ctx.fillRect(0, 320, 800, 280);
+
+        // 2. 遠景山巒／建築輪廓
+        ctx.save();
+        ctx.globalAlpha = 0.45;
+        ctx.fillStyle = theme.water[0];
+        ctx.beginPath();
+        ctx.moveTo(0, 340);
+        for (let x = 0; x <= 800; x += 40) {
+          const h = 230 + Math.sin(x * 0.008 + rand() * 1.5) * 55;
+          ctx.lineTo(x, h);
+        }
+        ctx.lineTo(800, 340);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // 3. 莫內式短促厚塗筆觸層（天空雲彩與光斑）
+        for (let i = 0; i < 650; i++) {
+          const x = rand() * 800;
+          const y = rand() * 335;
+          const color = theme.sky[Math.floor(rand() * theme.sky.length)];
+          drawBrushStroke(ctx, x, y, 18 + rand() * 26, 6 + rand() * 7, (rand() - 0.5) * 0.35, color, 0.55);
+        }
+
+        // 4. 場景主題光暈（太陽／月光）
+        const sunX = 220 + rand() * 360;
+        const sunY = 140 + rand() * 95;
+        const glow = ctx.createRadialGradient(sunX, sunY, 8, sunX, sunY, 150);
+        glow.addColorStop(0, theme.accent);
+        glow.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, 800, 450);
+
+        // 5. 前景水波與草地印象派橫向筆觸
+        for (let i = 0; i < 850; i++) {
+          const x = rand() * 800;
+          const y = 325 + rand() * 275;
+          const isHighlight = Math.abs(x - sunX) < 130 && rand() > 0.55;
+          const color = isHighlight ? theme.accent : theme.water[Math.floor(rand() * theme.water.length)];
+          drawBrushStroke(ctx, x, y, 22 + rand() * 32, 5 + rand() * 6, (rand() - 0.5) * 0.15, color, isHighlight ? 0.72 : 0.6);
+        }
+
+        // 6. 前景印象派繁花／枝葉點綴
+        for (let i = 0; i < 240; i++) {
+          const side = rand() > 0.5 ? rand() * 230 : 570 + rand() * 230;
+          const y = 260 + rand() * 340;
+          const color = rand() > 0.4 ? theme.accent : theme.sky[0];
+          drawBrushStroke(ctx, side, y, 10 + rand() * 14, 7 + rand() * 8, rand() * Math.PI, color, 0.78);
+        }
+
+        // 7. 畫布亞麻細微質感
+        ctx.strokeStyle = "rgba(255, 248, 235, 0.08)";
+        ctx.lineWidth = 1;
+        for (let y = 0; y < 600; y += 4) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(800, y);
+          ctx.stroke();
+        }
+
+        const url = canvas.toDataURL("image/jpeg", 0.9);
+        paintingCache[item.id] = url;
+        return url;
+      }
+
+      function drawBrushStroke(ctx, x, y, w, h, angle, color, alpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(-w / 2, -h / 2, w, h, h / 2);
+        } else {
+          ctx.rect(-w / 2, -h / 2, w, h);
+        }
+        ctx.fill();
+        ctx.restore();
+      }
+
+      /* =========================================================
+         初始化與導覽渲染
+         ========================================================= */
+      function init() {
+        renderAlphabetBar();
+        bindEvents();
+        loadWord(0);
+        scanAllAssets();
+      }
+
+      function renderAlphabetBar() {
+        el.alphabetBar.innerHTML = "";
+        VOCABULARY_DATA.forEach((item, index) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "alpha-pill";
+          btn.textContent = item.letter;
+          btn.title = `${item.letter} — ${item.word} (${item.meaningZh})`;
+          btn.addEventListener("click", () => loadWord(index));
+          el.alphabetBar.appendChild(btn);
+        });
+        updateAlphabetStates();
+      }
+
+      function updateAlphabetStates() {
+        const pills = el.alphabetBar.querySelectorAll(".alpha-pill");
+        pills.forEach((pill, idx) => {
+          const item = VOCABULARY_DATA[idx];
+          pill.classList.toggle("active", idx === state.currentIndex);
+          pill.classList.toggle("mastered", state.masteredIds.has(item.id));
+        });
+        el.masteredCount.textContent = state.masteredIds.size;
+      }
+
+      function loadWord(index) {
+        state.currentIndex = (index + VOCABULARY_DATA.length) % VOCABULARY_DATA.length;
+        const item = VOCABULARY_DATA[state.currentIndex];
+
+        el.medallionLetter.textContent = item.letter;
+        el.wordImage.src = getImpressionistPaintingUrl(item);
+        el.wordImage.alt = `${item.word} - 印象派油畫配圖`;
+
+        el.displayWord.textContent = item.word;
+        el.displayPhonetic.textContent = item.phonetic;
+        el.displayPos.textContent = item.pos;
+        el.displayMeaning.textContent = item.meaningZh;
+        el.displaySentence.innerHTML = `“${highlightTargetWord(item.sentence, item.word)}”`;
+        el.displaySentenceZh.textContent = item.sentenceZh;
+        el.displayPlay.textContent = `— ${item.play}`;
+        el.displayAppreciation.textContent = item.appreciation;
+
+        const isMastered = state.masteredIds.has(item.id);
+        el.masteredIcon.textContent = isMastered ? "♥" : "♡";
+        el.masteredText.textContent = isMastered ? "已收藏" : "加入收藏";
+
+        state.hintStep = 0;
+        el.trialPos.textContent = item.pos;
+        el.trialMeaning.textContent = item.meaningZh;
+        el.trialMaskedSentence.innerHTML = `“${maskTargetWord(item.sentence, item.word)}”`;
+        el.trialSentenceZh.textContent = item.sentenceZh;
+        el.hintDisplayBanner.classList.add("hidden");
+        el.hintDisplayBanner.textContent = "";
+        el.trialFeedback.classList.add("hidden");
+        el.spellingInput.value = "";
+
+        el.progressCounter.textContent = `${state.currentIndex + 1} / ${VOCABULARY_DATA.length}`;
+        updateAlphabetStates();
+
+        if (state.mode === "practice") {
+          setTimeout(() => el.spellingInput.focus(), 60);
+        }
+      }
+
+      function highlightTargetWord(sentence, target) {
+        const regex = new RegExp(`\\b(${target})\\b`, "gi");
+        return sentence.replace(regex, '<mark class="shakespeare-mark">$1</mark>');
+      }
+
+      function maskTargetWord(sentence, target) {
+        const regex = new RegExp(`\\b(${target})\\b`, "gi");
+        const underscores = "_".repeat(target.length);
+        return sentence.replace(regex, `<span class="blank-slot" title="共 ${target.length} 個字母">${underscores}</span>`);
+      }
+
+      function switchMode(newMode) {
+        state.mode = newMode;
+        const isAppreciate = newMode === "appreciate";
+
+        if (isAppreciate) {
+          el.modeAppreciateBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-[#6e232e] text-[#fcf8f2] shadow-sm";
+          el.modePracticeBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-[#5c4b42] hover:text-[#2e241f]";
+        } else {
+          el.modePracticeBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-[#6e232e] text-[#fcf8f2] shadow-sm";
+          el.modeAppreciateBtn.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-[#5c4b42] hover:text-[#2e241f]";
+        }
+
+        el.appreciatePanel.classList.toggle("hidden", !isAppreciate);
+        el.practicePanel.classList.toggle("hidden", isAppreciate);
+        if (!isAppreciate) el.spellingInput.focus();
+      }
+
+      /* =========================================================
+         雙軌音檔播放（優先外部 MP3，無外部檔時自動使用英式語音備援）
+         ========================================================= */
+      function playAudioWithFallback(audioPath, fallbackText, triggerBtn) {
+        const audio = el.sharedAudioPlayer;
+        audio.pause();
+        audio.currentTime = 0;
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+        document.querySelectorAll(".playing").forEach((b) => b.classList.remove("playing"));
+        if (triggerBtn) triggerBtn.classList.add("playing");
+
+        audio.src = audioPath;
+        audio
+          .play()
+          .then(() => {
+            audio.onended = () => {
+              if (triggerBtn) triggerBtn.classList.remove("playing");
+            };
+          })
+          .catch(() => {
+            if ("speechSynthesis" in window && fallbackText) {
+              const utter = new SpeechSynthesisUtterance(fallbackText);
+              utter.lang = "en-GB";
+              utter.rate = 0.92;
+              utter.onend = () => {
+                if (triggerBtn) triggerBtn.classList.remove("playing");
+              };
+              utter.onerror = () => {
+                if (triggerBtn) triggerBtn.classList.remove("playing");
+              };
+              window.speechSynthesis.speak(utter);
+            } else {
+              if (triggerBtn) triggerBtn.classList.remove("playing");
+              showToast(`⚠️ 目前瀏覽器不支援語音播放`);
+            }
+          });
+      }
+
+      /* =========================================================
+         拼字試煉互動邏輯
+         ========================================================= */
+      function handleHintLetter() {
+        const item = VOCABULARY_DATA[state.currentIndex];
+        const word = item.word;
+        state.hintStep += 1;
+
+        el.hintDisplayBanner.classList.remove("hidden");
+        if (state.hintStep === 1) {
+          el.hintDisplayBanner.textContent = `💡 首字母提示：以「 ${word[0].toUpperCase()} 」開頭，全字共 ${word.length} 個字母（${word[0]} ${"_ ".repeat(word.length - 1).trim()}）`;
+        } else {
+          const revealed = word.slice(0, 2) + "_".repeat(Math.max(0, word.length - 2));
+          el.hintDisplayBanner.textContent = `💡 進階提示：前兩字母為「 ${revealed} 」，音標 ${item.phonetic}`;
+        }
+        el.spellingInput.focus();
+      }
+
+      function handleSpellingSubmit(e) {
+        e.preventDefault();
+        const item = VOCABULARY_DATA[state.currentIndex];
+        const userGuess = el.spellingInput.value.trim().toLowerCase();
+        const answer = item.word.toLowerCase();
+
+        if (!userGuess) {
+          showToast("請先輸入你拼寫的單字喔！");
+          return;
+        }
+
+        el.trialFeedback.classList.remove("hidden");
+
+        if (userGuess === answer) {
+          el.trialFeedback.className = "rounded-xl px-4 py-3 text-sm font-medium bg-[#ecfdf5] border border-[#10b981]/40 text-[#065f46]";
+          el.trialFeedback.innerHTML = `✨ 拼寫完全正確！<strong>${item.word}</strong> ${item.phonetic} — 「${item.meaningZh}」`;
+          el.trialMaskedSentence.innerHTML = `“${highlightTargetWord(item.sentence, item.word)}”`;
+          playPleasantChime();
+          state.masteredIds.add(item.id);
+          saveMastered();
+          updateAlphabetStates();
+        } else {
+          el.trialFeedback.className = "rounded-xl px-4 py-3 text-sm font-medium bg-[#fef2f2] border border-[#ef4444]/40 text-[#991b1b]";
+          el.trialFeedback.innerHTML = `✒️ 拼寫略有出入（你輸入了 <em>${escapeHtml(userGuess)}</em>），請再試一次或點擊上方提示按鈕！`;
+        }
+      }
+
+      function handleRevealAnswer() {
+        const item = VOCABULARY_DATA[state.currentIndex];
+        el.spellingInput.value = item.word;
+        el.trialMaskedSentence.innerHTML = `“${highlightTargetWord(item.sentence, item.word)}”`;
+        el.trialFeedback.className = "rounded-xl px-4 py-3 text-sm font-medium bg-[#ecfdf5] border border-[#10b981]/40 text-[#065f46]";
+        el.trialFeedback.innerHTML = `📖 正確拼寫為：<strong>${item.word}</strong> ${item.phonetic}`;
+      }
+
+      function playPleasantChime() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          [523.25, 659.25, 783.99].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.08, ctx.currentTime + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.08 + 0.6);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + idx * 0.08);
+            osc.stop(ctx.currentTime + idx * 0.08 + 0.65);
+          });
+        } catch (_) {}
+      }
+
+      /* =========================================================
+         全覽畫廊與燈箱放大
+         ========================================================= */
+      function openGalleryModal() {
+        el.galleryGrid.innerHTML = "";
+        VOCABULARY_DATA.forEach((item, idx) => {
+          const card = document.createElement("div");
+          card.className = "group rounded-xl overflow-hidden border border-[#d6c5ae] bg-white hover:border-[#6e232e] hover:shadow-md transition cursor-pointer";
+          const imgUrl = getImpressionistPaintingUrl(item);
+          card.innerHTML = `
+            <div class="aspect-4/3 overflow-hidden bg-[#efe6d8]">
+              <img class="w-full h-full object-cover group-hover:scale-105 transition duration-300" src="${imgUrl}" alt="${item.word}" />
+            </div>
+            <div class="p-2.5">
+              <div class="font-playfair font-bold text-sm text-[#2e241f]">${item.letter}. ${item.word}</div>
+              <div class="text-xs text-[#6e5c52] truncate mt-0.5">${item.meaningZh}</div>
+            </div>
+          `;
+          card.addEventListener("click", () => {
+            loadWord(idx);
+            closeModal("galleryModal");
+          });
+          el.galleryGrid.appendChild(card);
+        });
+        el.galleryModal.classList.remove("hidden");
+      }
+
+      function openLightbox() {
+        const item = VOCABULARY_DATA[state.currentIndex];
+        el.lightboxImg.src = el.wordImage.src;
+        el.lightboxTitle.textContent = `${item.letter} — ${item.word}`;
+        el.lightboxQuote.textContent = `“${item.sentence}”`;
+        el.lightboxModal.classList.remove("hidden");
+      }
+
+      /* =========================================================
+         素材檢測 / 除錯面板
+         ========================================================= */
+      async function scanAllAssets() {
+        el.debugStatusBadge.className = "status-dot checking";
+        let wordAudioOk = 0;
+        let quoteAudioOk = 0;
+
+        const tasks = VOCABULARY_DATA.map(async (item) => {
+          const [hasWordMp3, hasQuoteMp3] = await Promise.all([
+            checkAudioExists(item.wordAudio),
+            checkAudioExists(item.quoteAudio)
+          ]);
+
+          state.assetStatus[item.id] = {
+            img: true,
+            wordAudio: hasWordMp3,
+            quoteAudio: hasQuoteMp3
+          };
+
+          if (hasWordMp3) wordAudioOk++;
+          if (hasQuoteMp3) quoteAudioOk++;
+        });
+
+        await Promise.all(tasks);
+
+        el.dbgImgOk.textContent = "26";
+        el.dbgWordAudioOk.textContent = wordAudioOk;
+        el.dbgQuoteAudioOk.textContent = quoteAudioOk;
+        el.debugStatusBadge.className = `status-dot ${wordAudioOk === 26 && quoteAudioOk === 26 ? "ok" : "warn"}`;
+
+        renderDebugTable();
+      }
+
+      function checkAudioExists(url) {
+        return new Promise((resolve) => {
+          const audio = new Audio();
+          const timer = setTimeout(() => resolve(false), 1500);
+          audio.onloadedmetadata = () => {
+            clearTimeout(timer);
+            resolve(true);
+          };
+          audio.onerror = () => {
+            clearTimeout(timer);
+            resolve(false);
+          };
+          audio.src = url;
+        });
+      }
+
+      function renderDebugTable() {
+        const missingOnly = el.chkMissingOnly.checked;
+        el.debugTableBody.innerHTML = "";
+
+        VOCABULARY_DATA.forEach((item, idx) => {
+          const st = state.assetStatus[item.id] || { img: true, wordAudio: false, quoteAudio: false };
+          const isComplete = st.wordAudio && st.quoteAudio;
+
+          if (missingOnly && isComplete) return;
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td class="py-2.5 px-2 font-cinzel font-bold text-[#6e232e]">${item.letter}</td>
+            <td class="py-2.5 px-2"><strong>${item.word}</strong><br><span class="text-[#7a685c] text-xs">${item.meaningZh}</span></td>
+            <td class="py-2.5 px-2">
+              <span class="inline-block px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#065f46] text-xs font-semibold">✅ 內建印象派畫布</span>
+            </td>
+            <td class="py-2.5 px-2">
+              <span class="inline-block px-2 py-0.5 rounded-full ${st.wordAudio ? "bg-[#ecfdf5] text-[#065f46]" : "bg-[#fffbeb] text-[#92400e]"} text-xs font-semibold">
+                ${st.wordAudio ? "✅ 外部MP3" : "🔊 英式語音備援"}
+              </span>
+              <button type="button" class="ml-1 px-2 py-0.5 rounded bg-[#efe5d5] hover:bg-[#6e232e] hover:text-white text-xs transition cursor-pointer" data-audio="${item.wordAudio}" data-text="${item.word}">▶ 試聽</button>
+              <div class="text-[11px] text-[#8a786c] mt-0.5 font-mono">${item.wordAudio}</div>
+            </td>
+            <td class="py-2.5 px-2">
+              <span class="inline-block px-2 py-0.5 rounded-full ${st.quoteAudio ? "bg-[#ecfdf5] text-[#065f46]" : "bg-[#fffbeb] text-[#92400e]"} text-xs font-semibold">
+                ${st.quoteAudio ? "✅ 外部MP3" : "🔊 英式語音備援"}
+              </span>
+              <button type="button" class="ml-1 px-2 py-0.5 rounded bg-[#efe5d5] hover:bg-[#6e232e] hover:text-white text-xs transition cursor-pointer" data-audio="${item.quoteAudio}" data-text="${escapeHtml(item.sentence)}">▶ 試聽</button>
+              <div class="text-[11px] text-[#8a786c] mt-0.5 font-mono">${item.quoteAudio}</div>
+            </td>
+            <td class="py-2.5 px-2">
+              <button type="button" class="px-2.5 py-1 rounded-lg bg-[#2c4a3e] text-white text-xs hover:bg-[#1e332b] transition cursor-pointer jump-word-btn" data-idx="${idx}">前往</button>
+            </td>
+          `;
+          el.debugTableBody.appendChild(tr);
+        });
+
+        el.debugTableBody.querySelectorAll("[data-audio]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            playAudioWithFallback(btn.dataset.audio, btn.dataset.text, btn);
+          });
+        });
+
+        el.debugTableBody.querySelectorAll(".jump-word-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            loadWord(Number(btn.dataset.idx));
+            closeModal("debugModal");
+          });
+        });
+      }
+
+      /* =========================================================
+         事件綁定
+         ========================================================= */
+      function bindEvents() {
+        el.modeAppreciateBtn.addEventListener("click", () => switchMode("appreciate"));
+        el.modePracticeBtn.addEventListener("click", () => switchMode("practice"));
+
+        el.btnPlayWord.addEventListener("click", () => {
+          const item = VOCABULARY_DATA[state.currentIndex];
+          playAudioWithFallback(item.wordAudio, item.word, el.btnPlayWord);
+        });
+
+        el.btnPlayQuote.addEventListener("click", () => {
+          const item = VOCABULARY_DATA[state.currentIndex];
+          playAudioWithFallback(item.quoteAudio, item.sentence, el.btnPlayQuote);
+        });
+
+        el.btnToggleMastered.addEventListener("click", () => {
+          const item = VOCABULARY_DATA[state.currentIndex];
+          if (state.masteredIds.has(item.id)) {
+            state.masteredIds.delete(item.id);
+            showToast(`已將「${item.word}」移出收藏`);
+          } else {
+            state.masteredIds.add(item.id);
+            showToast(`♥ 已將「${item.word}」加入典藏名單`);
+          }
+          saveMastered();
+          loadWord(state.currentIndex);
+        });
+
+        el.btnNextWord.addEventListener("click", () => loadWord(state.currentIndex + 1));
+        el.btnNextBottom.addEventListener("click", () => loadWord(state.currentIndex + 1));
+        el.btnPrevBottom.addEventListener("click", () => loadWord(state.currentIndex - 1));
+        el.btnTrialNext.addEventListener("click", () => loadWord(state.currentIndex + 1));
+
+        el.btnHintLetter.addEventListener("click", handleHintLetter);
+        el.btnHintAudio.addEventListener("click", () => {
+          const item = VOCABULARY_DATA[state.currentIndex];
+          playAudioWithFallback(item.wordAudio, item.word, el.btnHintAudio);
+        });
+        el.btnHintQuoteAudio.addEventListener("click", () => {
+          const item = VOCABULARY_DATA[state.currentIndex];
+          playAudioWithFallback(item.quoteAudio, item.sentence, el.btnHintQuoteAudio);
+        });
+        el.spellingForm.addEventListener("submit", handleSpellingSubmit);
+        el.btnRevealAnswer.addEventListener("click", handleRevealAnswer);
+
+        el.btnGalleryOverview.addEventListener("click", openGalleryModal);
+        el.btnDebugModal.addEventListener("click", () => {
+          renderDebugTable();
+          el.debugModal.classList.remove("hidden");
+        });
+        el.artworkFrame.addEventListener("click", openLightbox);
+        document.getElementById("btnZoomHint").addEventListener("click", openLightbox);
+
+        el.chkMissingOnly.addEventListener("change", renderDebugTable);
+        el.btnRescanAssets.addEventListener("click", async () => {
+          showToast("🔄 正在重新掃描全站畫布與外部音檔...");
+          await scanAllAssets();
+          showToast("✅ 素材掃描完成！");
+        });
+
+        document.querySelectorAll("[data-close]").forEach((btn) => {
+          btn.addEventListener("click", () => closeModal(btn.dataset.close));
+        });
+
+        document.querySelectorAll(".modal-backdrop, #lightboxModal, #galleryModal, #debugModal").forEach((backdrop) => {
+          backdrop.addEventListener("click", (e) => {
+            if (e.target === backdrop) backdrop.classList.add("hidden");
+          });
+        });
+
+        // 鍵盤左右鍵快速切換單字（非輸入框聚焦時）
+        document.addEventListener("keydown", (e) => {
+          if (document.activeElement === el.spellingInput) return;
+          if (e.key === "ArrowRight") loadWord(state.currentIndex + 1);
+          if (e.key === "ArrowLeft") loadWord(state.currentIndex - 1);
+        });
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).classList.add("hidden");
+      }
+
+      function saveMastered() {
+        localStorage.setItem("shakespeare_mastered", JSON.stringify([...state.masteredIds]));
+      }
+
+      let toastTimer = null;
+      function showToast(msg) {
+        el.toastBanner.textContent = msg;
+        el.toastBanner.classList.remove("hidden");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          el.toastBanner.classList.add("hidden");
+        }, 3000);
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+      }
+
+      window.addEventListener("DOMContentLoaded", init);
+    })();
+  </script>
+</body>
+</html>
